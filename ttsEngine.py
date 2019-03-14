@@ -30,7 +30,7 @@ class tts:
         chunk = 1024
         p = pyaudio.PyAudio()
         for phoneme in word:
-            wf = wave.open("phonemes/"+phoneme+".wav", 'rb')
+            wf = wave.open("phonemes/"+phoneme.upper()+".wav", 'rb')
             stream = self.p.open(format=p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
                         rate=wf.getframerate(),
@@ -48,7 +48,10 @@ class tts:
 #        result = re.sub(r'[1]', "ONE", passage)
 
     def textToSpeech(self, passage):
-        passage =passage.upper()
+        regex = re.compile('[^a-zA-Z\. ]')
+        passage = regex.sub('', passage)
+        passage =  passage.upper()
+        print(passage)
         #passage = self.numToWords(passage)
         sentences = passage.split('.')
         #print(sentences)
@@ -56,7 +59,7 @@ class tts:
             sentences[i] = sentence.split(" ")
             #print(sentences[i])
             for j, word in enumerate(sentences[i]):
-                sentences[i][j] = self.getPhonemes(word)
+                sentences[i][j] = self.getPhonemes(word)#[::-1]#.reverse()
         print(sentences)
         #Could do this all in one big loop but will break it into 2 for logical reasons
         for sentence in sentences:
